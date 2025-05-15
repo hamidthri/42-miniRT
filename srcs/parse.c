@@ -1,1 +1,146 @@
 #include "../includes/minirt.h"
+
+/**
+ * Parse ambient lighting information
+ */
+int	parse_ambient(t_scene *scene, char **parts)
+{
+	if (!parts[1] || !parts[2])
+		return (0);
+	
+	scene->ambient.ratio = ft_atof(parts[1]);
+	if (scene->ambient.ratio < 0 || scene->ambient.ratio > 1)
+		return (0);
+	
+	scene->ambient.color = parse_color(parts[2]);
+	return (1);
+}
+
+/**
+ * Parse camera information
+ */
+int	parse_camera(t_scene *scene, char **parts)
+{
+	if (!parts[1] || !parts[2] || !parts[3])
+		return (0);
+	
+	scene->camera.pos = parse_vector(parts[1]);
+	scene->camera.dir = parse_vector(parts[2]);
+	
+	// Normalize direction vector
+	scene->camera.dir = vec_normalize(scene->camera.dir);
+	
+	// Check if direction vector is valid
+	if (scene->camera.dir.x == 0 && scene->camera.dir.y == 0 && scene->camera.dir.z == 0)
+		return (0);
+	
+	scene->camera.fov = ft_atof(parts[3]);
+	if (scene->camera.fov <= 0 || scene->camera.fov >= 180)
+		return (0);
+	
+	return (1);
+}
+
+/**
+ * Parse light information
+ */
+int parse_light(t_scene *scene, char **parts)
+{
+    if (!parts[1] || !parts[2] || !parts[3] || scene->light_count >= 3)
+        return (0);
+    
+    scene->lights[scene->light_count].pos = parse_vector(parts[1]);
+    scene->lights[scene->light_count].brightness = ft_atof(parts[2]);
+    
+    if (scene->lights[scene->light_count].brightness < 0 || 
+        scene->lights[scene->light_count].brightness > 1)
+        return (0);
+    
+    scene->lights[scene->light_count].color = parse_color(parts[3]);
+    
+    // Set default specular exponent if not provided
+    scene->lights[scene->light_count].specular_exp = 32.0;
+    
+    // Check if specular exponent is provided
+    if (parts[4])
+        scene->lights[scene->light_count].specular_exp = ft_atof(parts[4]);
+    
+    scene->light_count++;
+    return (1);
+}
+
+/**
+ * Parse sphere information
+ */
+int	parse_sphere(t_scene *scene, char **parts)
+{
+	if (!parts[1] || !parts[2] || !parts[3] || scene->obj_count >= MAX_OBJECTS)
+		return (0);
+	
+	scene->objects[scene->obj_count].type = SPHERE;
+	scene->objects[scene->obj_count].sphere.center = parse_vector(parts[1]);
+	scene->objects[scene->obj_count].sphere.diameter = ft_atof(parts[2]);
+	
+	if (scene->objects[scene->obj_count].sphere.diameter <= 0)
+		return (0);
+	
+	scene->objects[scene->obj_count].sphere.radius = 
+		scene->objects[scene->obj_count].sphere.diameter / 2.0;
+	scene->objects[scene->obj_count].color = parse_color(parts[3]);
+
+	// Optional texture support
+	if (parts[4])
+	{
+		ft_putstr_fd("Attempting to load texture: ", 1);
+		ft_putendl_fd(parts[4], 1);
+		scene->objects[scene->obj_count].texture = load_texture(parts[4]);
+		if (!scene->objects[scene->obj_count].texture)
+			ft_putendl_fd("Warning: Failed to load texture, continuing without it", 1);
+	}
+	else
+		scene->objects[scene->obj_count].texture = NULL;
+
+	scene->obj_count++;
+	return (1);
+}
+
+/**
+ * Parse plane information
+ */
+int	parse_plane(t_scene *scene, char **parts)
+{
+	if (!parts[1] || !parts[2] || !parts[3] || scene->obj_count >= MAX_OBJECTS)
+		return (0);
+	
+	scene->objects[scene->obj_count].type = PLANE;
+	scene->objects[scene->obj_count].plane.point = parse_vector(parts[1]);
+	scene->objects[scene->obj_count].plane.normal = parse_vector(parts[2]);
+	
+	// Normalize the normal vector
+	scene->objects[scene->obj_count].plane.normal = 
+		vec_normalize(scene->objects[scene->obj_count].plane.normal);
+	
+	// Check if normal vector is valid
+	if (scene->objects[scene->obj_count].plane.normal.x == 0 && 
+		scene->objects[scene->obj_count].plane.normal.y == 0 && 
+		scene->objects[scene->obj_count].plane.normal.z == 0)
+		return (0);
+	
+	scene->objects[scene->obj_count].color = parse_color(parts[3]);
+
+	// Optional texture support
+	if (parts[4])
+	{
+		ft_putstr_fd("Attempting to load texture: ", 1);
+		ft_putendl_fd(parts[4], 1);
+		scene->objects[scene->obj_count].texture = load_texture(parts[4]);
+		if (!scene->objects[scene->obj_count].texture)
+			ft_putendl_fd("Warning: Failed to load texture, continuing without it", 1);
+	}
+	else
+		scene->objects[scene->obj_count].texture = NULL;
+
+	scene->obj_count++;
+	return (1);
+}
+
