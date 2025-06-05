@@ -1,5 +1,42 @@
 #include "../includes/minirt.h"
 
+
+int	read_map(t_scene *scene, int fd)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			break;
+		
+		// Remove newline character if present
+		int len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+		
+		if (!parse_line(scene, line))
+		{
+			free(line);
+			close(fd);
+			ft_putstr_fd("Error: Invalid scene file format\n", 2);
+			return (0);
+		}
+		free(line);
+	}
+	close(fd);
+	
+	// Verify that we have at least one object, ambient and camera
+	if (scene->obj_count == 0)
+	{
+		ft_putstr_fd("Error: No objects in scene\n", 2);
+		return (0);
+	}
+	return (1);
+
+}
+
 /**
  * Parse ambient lighting information
  */

@@ -1,5 +1,65 @@
 # include "../includes/minirt.h"
 
+
+void	render(mlx_t *mlx, t_scene *scene)
+{
+	size_t		i;
+	size_t		j;
+	mlx_image_t	*img;
+	t_ray		ray;
+
+	img = mlx_new_image(mlx, scene->canvas.w, scene->canvas.h);
+	if (!img)
+	{
+		ft_putstr_fd("Error: Could not create image\n", 2);
+		return;
+	}
+	i = 0;
+	scene->viewport = viewport_dim(scene->canvas, scene->camera);
+	while (i < scene->canvas.w)
+	{
+		j = 0;
+		while (j < scene->canvas.h)
+		{
+			ray = (t_ray){scene->camera.pos, ray_dir(scene, i, j), INFINITY};
+			mlx_put_pixel(img, i, j, ray_get_color(scene, &ray));
+			j++;
+		}
+		i++;
+	}
+	mlx_image_to_window(mlx, img, 0, 0);
+}
+
+void cleanup_and_exit(t_scene *scene, mlx_t *mlx, int status)
+{
+    size_t i;
+    
+    if (mlx)
+        mlx_terminate(mlx);
+    
+    if (scene->objects)
+    {
+        // Free textures
+        for (i = 0; i < scene->obj_count; i++)
+        {
+            if (scene->objects[i].texture)
+            {
+                if (scene->objects[i].texture->data)
+                    free(scene->objects[i].texture->data);
+                if (scene->objects[i].texture->bump_map)
+                    free(scene->objects[i].texture->bump_map);
+                free(scene->objects[i].texture);
+            }
+        }
+        free(scene->objects);
+    }
+    
+    if (scene->lights)
+        free(scene->lights);
+    
+    exit(status);
+}
+
 void init_scene(t_scene *scene)
 {
     scene->obj_count = 0;
@@ -18,6 +78,7 @@ int main(int argc, char **argv)
     t_object *objs;
     t_light *lights;
     t_scene scene;
+    mlx_t *mlx;
 
 
     if (argc != 2)
@@ -45,5 +106,17 @@ int main(int argc, char **argv)
 		.canvas = (t_canvas){600, 400}, .obj_count = 0, .light_count = 0};
     // Read the scene file and populate the scene structure
     init_scene(&scene);
+    if (!read_map(&scene, fd))
+		cleanup_and_exit(&scene, NULL, 1);
+
+    mlx = mlx_init(scene.canvas.w, scene.canvas.h, "MiniRT", 1);
+    if (!mlx)
+    {
+        ft_putstr_fd("Error: MLX initialization failed\n", 2);
+        cleanup_and_exit(&scene, NULL, 1);
+    }
+
+    render(mlx, &scene);
+	
     return(0);
 }

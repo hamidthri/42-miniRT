@@ -5,6 +5,8 @@
 # include <fcntl.h>
 
 # include <unistd.h>
+# include "MLX42/include/MLX42/MLX42.h"
+
 
 # define MAX_OBJECTS 100
 # define MAX_LIGHTS 100
@@ -55,6 +57,15 @@ typedef struct s_cylinder
 	double		height;
 }	t_cylinder;
 
+typedef struct s_texture
+{
+    int         width;
+    int         height;
+    uint32_t    *data;
+    uint32_t    *bump_map;
+    int         has_bump_map;
+}   t_texture;
+
 // Each shape has its own specific properties, such as center, diameter, radius, etc.
 // The t_object struct is a union that can hold any of the above shapes.
 typedef struct s_object
@@ -66,6 +77,7 @@ typedef struct s_object
         t_sphere sphere;
         t_cylinder cylinder;
     };
+	t_texture *texture;
 } t_object;
 
 
