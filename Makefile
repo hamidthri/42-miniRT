@@ -1,6 +1,6 @@
 NAME = minirt
 
-SRC_DIR = ./src
+SRC_DIR = ./srcs
 
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 
