@@ -53,9 +53,6 @@ int	parse_ambient(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse camera information
- */
 int	parse_camera(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3])
@@ -64,10 +61,8 @@ int	parse_camera(t_scene *scene, char **parts)
 	scene->camera.pos = parse_vector(parts[1]);
 	scene->camera.dir = parse_vector(parts[2]);
 	
-	// Normalize direction vector
 	scene->camera.dir = vec_normalize(scene->camera.dir);
 	
-	// Check if direction vector is valid
 	if (scene->camera.dir.x == 0 && scene->camera.dir.y == 0 && scene->camera.dir.z == 0)
 		return (0);
 	
@@ -78,9 +73,7 @@ int	parse_camera(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse light information
- */
+
 int parse_light(t_scene *scene, char **parts)
 {
     if (!parts[1] || !parts[2] || !parts[3] || scene->light_count >= 3)
@@ -95,10 +88,8 @@ int parse_light(t_scene *scene, char **parts)
     
     scene->lights[scene->light_count].color = parse_color(parts[3]);
     
-    // Set default specular exponent if not provided
     scene->lights[scene->light_count].specular_exp = 32.0;
     
-    // Check if specular exponent is provided
     if (parts[4])
         scene->lights[scene->light_count].specular_exp = ft_atof(parts[4]);
     
@@ -106,9 +97,7 @@ int parse_light(t_scene *scene, char **parts)
     return (1);
 }
 
-/**
- * Parse sphere information
- */
+
 int	parse_sphere(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3] || scene->obj_count >= MAX_OBJECTS)

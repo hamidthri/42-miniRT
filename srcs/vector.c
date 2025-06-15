@@ -1,7 +1,5 @@
 #include "../includes/minirt.h"
 
-#include "minirt.h"
-
 t_vector	vec_add(t_vector v1, t_vector v2)
 {
 	t_vector	result;
