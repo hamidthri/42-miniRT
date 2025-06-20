@@ -5,6 +5,9 @@
 # include <fcntl.h>
 # include <math.h>
 #include "../libft/libft.h"
+#include <limits.h>
+#include <string.h>  // for strtok
+
 
 
 
@@ -12,8 +15,8 @@
 # include "MLX42/include/MLX42/MLX42.h"
 
 
-# define MAX_OBJECTS 100
-# define MAX_LIGHTS 100
+# define MAX_OBJECTS 10000
+# define MAX_LIGHTS 10000
 # define EPSILON 0.0001
 
 
@@ -89,6 +92,25 @@ typedef struct s_triangle
     t_vector    normal;
 }   t_triangle;
 
+
+typedef struct s_cone
+{
+	t_vector	vertex;
+	t_vector	axis;
+	double		angle;
+	double		height;
+}	t_cone;
+
+typedef struct s_hyperboloid
+{
+    t_vector    center;
+    t_vector    axis;
+    double      a;
+    double      b;
+    double      c;
+    double      height;
+}   t_hyperboloid;
+
 typedef struct s_texture
 {
     int         width;
@@ -98,20 +120,24 @@ typedef struct s_texture
     int         has_bump_map;
 }   t_texture;
 
-// Each shape has its own specific properties, such as center, diameter, radius, etc.
-// The t_object struct is a union that can hold any of the above shapes.
+
 typedef struct s_object
 {
 	t_object_type	type;
-    t_color color;
-    union 
-    {
-        t_plane plane;
-        t_sphere sphere;
-        t_cylinder cylinder;
-    };
-	t_texture *texture;
-} t_object;
+	t_color			color;
+	union
+	{
+		t_sphere	sphere;
+		t_plane		plane;
+		t_cylinder	cylinder;
+		t_cone		cone;
+		t_hyperboloid hyperboloid;
+		t_triangle	triangle;
+		
+	};
+	t_texture        *texture;      // Add this for bump mapping
+
+}	t_object;
 
 
 
@@ -191,8 +217,8 @@ t_color		apply_checkerboard(t_color base_color, t_vector hit_point); // Optional
 t_texture    *load_texture(char *path);
 t_vector     bump_map_normal(t_object obj, t_vector normal, t_vector point);
 t_color      get_texture_color(t_texture *texture, double u, double v);
-// int 		intersect_hyperboloid(t_ray *ray, t_hyperboloid hyp);
-// t_vector    hyperboloid_normal(t_vector hit_point, t_hyperboloid hyp);
+int 		intersect_hyperboloid(t_ray *ray, t_hyperboloid hyp);
+t_vector    hyperboloid_normal(t_vector hit_point, t_hyperboloid hyp);
 void        calculate_uv(t_object obj, t_vector point, double *u, double *v);
 int parse_hyperboloid(t_scene *scene, char **parts);
 int solve_quadratic(double coeffs[3], double *t1, double *t2);
@@ -201,7 +227,7 @@ int solve_quadratic(double coeffs[3], double *t1, double *t2);
 int			intersect_sphere(t_ray *ray, t_sphere sphere);
 int			intersect_plane(t_ray *ray, t_plane plane);
 int			intersect_cylinder(t_ray *ray, t_cylinder cylinder);
-// int			intersect_cone(t_ray *ray, t_cone cone);
+int			intersect_cone(t_ray *ray, t_cone cone);
 int			intersect_object(t_ray *ray, t_object obj);
 
 

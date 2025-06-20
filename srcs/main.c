@@ -117,6 +117,13 @@ int main(int argc, char **argv)
     }
 
     render(mlx, &scene);
+    mlx_key_hook(mlx, key_hook, mlx);
+	
+	// Start MLX loop
+	mlx_loop(mlx);
+	
+	// Clean up
+	cleanup_and_exit(&scene, mlx, 0);
 	
     return(0);
 }
