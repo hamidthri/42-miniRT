@@ -239,4 +239,13 @@ t_color		color_scale(t_color color, double scale);
 t_color		color_add(t_color c1, t_color c2);
 t_color		color_mul(t_color c1, t_color c2);
 
+
+int parse_sphere_compact(t_scene *scene, char **parts);
+
+
+int     intersect_triangle(t_ray *ray, t_triangle triangle);
+t_vector triangle_normal(t_triangle triangle);
+int     parse_triangle(t_scene *scene, char **parts);
+
+
 # endif

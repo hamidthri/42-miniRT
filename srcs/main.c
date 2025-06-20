@@ -30,6 +30,9 @@ void	render(mlx_t *mlx, t_scene *scene)
 	mlx_image_to_window(mlx, img, 0, 0);
 }
 
+/**
+ * Free resources and exit
+ */
 void cleanup_and_exit(t_scene *scene, mlx_t *mlx, int status)
 {
     size_t i;
@@ -72,58 +75,52 @@ void init_scene(t_scene *scene)
     scene->checkerboard = 0;  // Disabled by default
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    int fd;
-    t_object *objs;
-    t_light *lights;
-    t_scene scene;
-    mlx_t *mlx;
+	int			fd;
+	mlx_t		*mlx;
+	t_object	*objs;
+	t_light		*lights;
+	t_scene		scene;
 
-
-    if (argc != 2)
-        return (ft_putstr_fd("Error: Invalid number of arguments\n", 2), 1);
-    
-    fd = open(argv[1], O_RDONLY);
-    if (fd < 0)
-        return (ft_putstr_fd("Error: Failed to open file\n", 2), 1);
-    
-	// Allocate memory for objects and lights
-    objs = malloc(sizeof(t_object) * MAX_OBJECTS);
-    lights = malloc(sizeof(t_light) * MAX_LIGHTS);
-    if (!objs || !lights)
-    {
-        if (objs)
-            free(objs);
-        if (lights)
-            free(lights);
-        close(fd);
-        return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
-    }
-
-    // initialize the scene
-    scene = (t_scene){.objects = objs, .lights = lights,
-		.canvas = (t_canvas){600, 400}, .obj_count = 0, .light_count = 0};
-    // Read the scene file and populate the scene structure
-    init_scene(&scene);
-    if (!read_map(&scene, fd))
-		cleanup_and_exit(&scene, NULL, 1);
-
-    mlx = mlx_init(scene.canvas.w, scene.canvas.h, "MiniRT", 1);
-    if (!mlx)
-    {
-        ft_putstr_fd("Error: MLX initialization failed\n", 2);
-        cleanup_and_exit(&scene, NULL, 1);
-    }
-
-    render(mlx, &scene);
-    mlx_key_hook(mlx, key_hook, mlx);
+	if (argc != 2)
+		return (ft_putstr_fd("Error: Invalid number of arguments\n", 2), 1);
+	fd = open(argv[1], O_RDONLY);
+	if (fd == -1)
+		return (ft_putstr_fd("Error: Could not open file\n", 2), 1);
 	
-	// Start MLX loop
+	// Allocate memory for objects and lights
+	objs = malloc(sizeof(t_object) * MAX_OBJECTS);
+	lights = malloc(sizeof(t_light) * MAX_LIGHTS);
+	if (!objs || !lights)
+	{
+		if (objs)
+			free(objs);
+		if (lights)
+			free(lights);
+		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
+	}
+	
+	scene = (t_scene){.objects = objs, .lights = lights,
+		.canvas = (t_canvas){1200, 800}, .obj_count = 0, .light_count = 0};
+	init_scene(&scene);
+	
+	if (!read_map(&scene, fd))
+		cleanup_and_exit(&scene, NULL, 1);
+	
+	mlx = mlx_init(scene.canvas.w, scene.canvas.h, "MiniRT", 1);
+	if (!mlx)
+	{
+		ft_putstr_fd("Error: MLX initialization failed\n", 2);
+		cleanup_and_exit(&scene, NULL, 1);
+	}
+	
+	render(mlx, &scene);
+	
+	mlx_key_hook(mlx, key_hook, mlx);
+	
 	mlx_loop(mlx);
 	
-	// Clean up
 	cleanup_and_exit(&scene, mlx, 0);
-	
-    return(0);
+	return (0);
 }
