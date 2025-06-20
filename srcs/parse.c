@@ -1,6 +1,5 @@
 #include "../includes/minirt.h"
 
-
 int	read_map(t_scene *scene, int fd)
 {
 	char	*line;
@@ -11,7 +10,6 @@ int	read_map(t_scene *scene, int fd)
 		if (!line)
 			break;
 		
-		// Remove newline character if present
 		int len = ft_strlen(line);
 		if (len > 0 && line[len - 1] == '\n')
 			line[len - 1] = '\0';
@@ -27,7 +25,6 @@ int	read_map(t_scene *scene, int fd)
 	}
 	close(fd);
 	
-	// Verify that we have at least one object, ambient and camera
 	if (scene->obj_count == 0)
 	{
 		ft_putstr_fd("Error: No objects in scene\n", 2);
@@ -37,9 +34,7 @@ int	read_map(t_scene *scene, int fd)
 
 }
 
-/**
- * Parse ambient lighting information
- */
+
 int	parse_ambient(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2])
@@ -114,7 +109,6 @@ int	parse_sphere(t_scene *scene, char **parts)
 		scene->objects[scene->obj_count].sphere.diameter / 2.0;
 	scene->objects[scene->obj_count].color = parse_color(parts[3]);
 
-	// Optional texture support
 	if (parts[4])
 	{
 		ft_putstr_fd("Attempting to load texture: ", 1);
@@ -130,9 +124,7 @@ int	parse_sphere(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse plane information
- */
+
 int	parse_plane(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3] || scene->obj_count >= MAX_OBJECTS)
@@ -142,11 +134,9 @@ int	parse_plane(t_scene *scene, char **parts)
 	scene->objects[scene->obj_count].plane.point = parse_vector(parts[1]);
 	scene->objects[scene->obj_count].plane.normal = parse_vector(parts[2]);
 	
-	// Normalize the normal vector
 	scene->objects[scene->obj_count].plane.normal = 
 		vec_normalize(scene->objects[scene->obj_count].plane.normal);
 	
-	// Check if normal vector is valid
 	if (scene->objects[scene->obj_count].plane.normal.x == 0 && 
 		scene->objects[scene->obj_count].plane.normal.y == 0 && 
 		scene->objects[scene->obj_count].plane.normal.z == 0)
@@ -154,7 +144,6 @@ int	parse_plane(t_scene *scene, char **parts)
 	
 	scene->objects[scene->obj_count].color = parse_color(parts[3]);
 
-	// Optional texture support
 	if (parts[4])
 	{
 		ft_putstr_fd("Attempting to load texture: ", 1);
