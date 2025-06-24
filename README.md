@@ -1,4 +1,4 @@
-# miniRT - My First Ray Tracer
+# miniRT
 
 A 3D ray tracer implementation in C using miniLibX that generates photorealistic images from mathematical scene descriptions. This project demonstrates the fundamentals of ray tracing algorithms, 3D mathematics, and computer graphics programming.
 
