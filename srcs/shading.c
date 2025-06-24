@@ -75,6 +75,30 @@ t_vector	cylinder_normal(t_vector point, t_cylinder cylinder)
 	return (vec_normalize(normal));
 }
 
+
+t_vector cone_normal(t_vector point, t_cone cone)
+{
+    t_vector    cp;
+    t_vector    axis_proj;
+    t_vector    normal;
+    double      proj_len;
+    
+    t_vector base_center = vec_add(cone.vertex, vec_mul(cone.axis, cone.height));
+    double base_radius = cone.height * tan(cone.angle);
+    
+    if (fabs(vec_dot(vec_sub(point, base_center), cone.axis)) < EPSILON &&
+        vec_length(vec_sub(point, base_center)) <= base_radius + EPSILON)
+        return (cone.axis);
+    
+    cp = vec_sub(point, cone.vertex);
+    proj_len = vec_dot(cp, cone.axis);
+    axis_proj = vec_mul(cone.axis, proj_len);
+    
+    normal = vec_sub(cp, vec_mul(axis_proj, (1 + pow(tan(cone.angle), 2))));
+    
+    return vec_normalize(normal);
+}
+
 t_vector get_normal(t_object obj, t_vector hit_point)
 {
     t_vector normal;
@@ -85,12 +109,12 @@ t_vector get_normal(t_object obj, t_vector hit_point)
         normal = plane_normal(obj.plane);
     else if (obj.type == CYLINDER)
         normal = cylinder_normal(hit_point, obj.cylinder);
-    // else if (obj.type == CONE)
-    //     normal = cone_normal(hit_point, obj.cone);
-    // else if (obj.type == HYPERBOLOID)
-    //     normal = hyperboloid_normal(hit_point, obj.hyperboloid);
-    // else if (obj.type == TRIANGLE)
-    //     normal = triangle_normal(obj.triangle);
+    else if (obj.type == CONE)
+        normal = cone_normal(hit_point, obj.cone);
+    else if (obj.type == HYPERBOLOID)
+        normal = hyperboloid_normal(hit_point, obj.hyperboloid);
+    else if (obj.type == TRIANGLE)
+        normal = triangle_normal(obj.triangle);
     
     else
         return ((t_vector){0, 0, 0});

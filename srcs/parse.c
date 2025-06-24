@@ -6,15 +6,12 @@
 /*   By: htaheri <htaheri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 10:00:00 by user              #+#    #+#             */
-/*   Updated: 2025/06/20 16:45:08 by htaheri          ###   ########.fr       */
+/*   Updated: 2025/06/24 18:10:44 by htaheri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minirt.h"
 
-/**
- * Parse ambient lighting information
- */
 int	parse_ambient(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2])
@@ -28,9 +25,6 @@ int	parse_ambient(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse camera information
- */
 int	parse_camera(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3])
@@ -39,10 +33,8 @@ int	parse_camera(t_scene *scene, char **parts)
 	scene->camera.pos = parse_vector(parts[1]);
 	scene->camera.dir = parse_vector(parts[2]);
 	
-	// Normalize direction vector
 	scene->camera.dir = vec_normalize(scene->camera.dir);
 	
-	// Check if direction vector is valid
 	if (scene->camera.dir.x == 0 && scene->camera.dir.y == 0 && scene->camera.dir.z == 0)
 		return (0);
 	
@@ -53,9 +45,7 @@ int	parse_camera(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse light information
- */
+
 int parse_light(t_scene *scene, char **parts)
 {
     if (!parts[1] || !parts[2] || !parts[3] || scene->light_count >= 3)
@@ -70,10 +60,8 @@ int parse_light(t_scene *scene, char **parts)
     
     scene->lights[scene->light_count].color = parse_color(parts[3]);
     
-    // Set default specular exponent if not provided
     scene->lights[scene->light_count].specular_exp = 32.0;
     
-    // Check if specular exponent is provided
     if (parts[4])
         scene->lights[scene->light_count].specular_exp = ft_atof(parts[4]);
     
@@ -81,9 +69,6 @@ int parse_light(t_scene *scene, char **parts)
     return (1);
 }
 
-/**
- * Parse sphere information
- */
 int	parse_sphere(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3] || scene->obj_count >= MAX_OBJECTS)
@@ -100,7 +85,6 @@ int	parse_sphere(t_scene *scene, char **parts)
 		scene->objects[scene->obj_count].sphere.diameter / 2.0;
 	scene->objects[scene->obj_count].color = parse_color(parts[3]);
 
-	// Optional texture support
 	if (parts[4])
 	{
 		ft_putstr_fd("Attempting to load texture: ", 1);
@@ -116,9 +100,7 @@ int	parse_sphere(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse plane information
- */
+
 int	parse_plane(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3] || scene->obj_count >= MAX_OBJECTS)
@@ -156,9 +138,7 @@ int	parse_plane(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse cylinder information
- */
+
 int	parse_cylinder(t_scene *scene, char **parts)
 {
 	if (!parts[1] || !parts[2] || !parts[3] || !parts[4] || !parts[5] || scene->obj_count >= MAX_OBJECTS)
@@ -168,11 +148,9 @@ int	parse_cylinder(t_scene *scene, char **parts)
 	scene->objects[scene->obj_count].cylinder.center = parse_vector(parts[1]);
 	scene->objects[scene->obj_count].cylinder.axis = parse_vector(parts[2]);
 	
-	// Normalize the axis vector
 	scene->objects[scene->obj_count].cylinder.axis = 
 		vec_normalize(scene->objects[scene->obj_count].cylinder.axis);
 	
-	// Check if axis vector is valid
 	if (scene->objects[scene->obj_count].cylinder.axis.x == 0 && 
 		scene->objects[scene->obj_count].cylinder.axis.y == 0 && 
 		scene->objects[scene->obj_count].cylinder.axis.z == 0)
@@ -191,7 +169,6 @@ int	parse_cylinder(t_scene *scene, char **parts)
 	
 	scene->objects[scene->obj_count].color = parse_color(parts[5]);
 
-	// Optional texture support
 	if (parts[6])
 	{
 		ft_putstr_fd("Attempting to load texture: ", 1);
@@ -207,9 +184,6 @@ int	parse_cylinder(t_scene *scene, char **parts)
 	return (1);
 }
 
-/**
- * Parse cone information
- */
 int parse_cone(t_scene *scene, char **parts)
 {
     if (!parts[1] || !parts[2] || !parts[3] || !parts[4] || !parts[5] || scene->obj_count >= MAX_OBJECTS)
@@ -219,17 +193,14 @@ int parse_cone(t_scene *scene, char **parts)
     scene->objects[scene->obj_count].cone.vertex = parse_vector(parts[1]);
     scene->objects[scene->obj_count].cone.axis = parse_vector(parts[2]);
     
-    // Normalize the axis vector
     scene->objects[scene->obj_count].cone.axis = 
         vec_normalize(scene->objects[scene->obj_count].cone.axis);
     
-    // Check if axis vector is valid
     if (scene->objects[scene->obj_count].cone.axis.x == 0 && 
         scene->objects[scene->obj_count].cone.axis.y == 0 && 
         scene->objects[scene->obj_count].cone.axis.z == 0)
         return (0);
     
-    // Get angle in degrees and convert to radians
     double angle_deg = ft_atof(parts[3]);
     if (angle_deg <= 0 || angle_deg >= 180)
         return (0);
@@ -242,7 +213,6 @@ int parse_cone(t_scene *scene, char **parts)
     
     scene->objects[scene->obj_count].color = parse_color(parts[5]);
 
-    // Optional texture support
     if (parts[6])
     {
         ft_putstr_fd("Attempting to load texture: ", 1);
@@ -258,9 +228,7 @@ int parse_cone(t_scene *scene, char **parts)
     return (1);
 }
 
-/**
- * Parse hyperboloid information
- */
+
 int parse_hyperboloid(t_scene *scene, char **parts)
 {
     if (!parts[1] || !parts[2] || !parts[3] || !parts[4] || !parts[5] || 
@@ -306,9 +274,6 @@ int parse_hyperboloid(t_scene *scene, char **parts)
 }
 
 
-/**
- * Parse a line from the .rt file
- */
 int parse_line(t_scene *scene, char *line)
 {
     char    **parts;
@@ -318,27 +283,22 @@ int parse_line(t_scene *scene, char *line)
     if (!line || line[0] == '#' || line[0] == '\0')
         return (1);
     
-    // Handle the new compact format
     if (strstr(line, " bum:") || strstr(line, " txm:"))
     {
-        // Split the line carefully
-        parts = malloc(sizeof(char *) * 10);  // Allocate space for multiple parts
+        parts = malloc(sizeof(char *) * 10);
         if (!parts)
             return (0);
         
-        // Initialize to NULL
         for (i = 0; i < 10; i++)
             parts[i] = NULL;
         
-        // Manual parsing for compact format
-        parts[0] = strtok(line, " ");  // Object type
+        parts[0] = strtok(line, " "); 
         if (parts[0] == NULL)
         {
             free(parts);
             return (0);
         }
         
-        // Parse remaining parts
         for (i = 1; i < 9; i++)
         {
             parts[i] = strtok(NULL, " ");
@@ -346,7 +306,6 @@ int parse_line(t_scene *scene, char *line)
                 break;
         }
         
-        // Determine object type and parse accordingly
         if (ft_strncmp(parts[0], "sp", 3) == 0)
             result = parse_sphere_compact(scene, parts);
         else
@@ -354,7 +313,6 @@ int parse_line(t_scene *scene, char *line)
     }
     else
     {
-        // Original parsing method
         parts = ft_split(line, ' ');
         if (!parts || !parts[0])
         {
@@ -390,7 +348,6 @@ int parse_line(t_scene *scene, char *line)
         else
             result = 0;
         
-        // Free parts
         int i = 0;
         while (parts[i])
             free(parts[i++]);
@@ -411,14 +368,12 @@ int parse_triangle(t_scene *scene, char **parts)
     scene->objects[scene->obj_count].triangle.v3 = parse_vector(parts[3]);
     scene->objects[scene->obj_count].color = parse_color(parts[4]);
 
-    // Calculate triangle normal
     t_vector e1 = vec_sub(scene->objects[scene->obj_count].triangle.v2, 
                            scene->objects[scene->obj_count].triangle.v1);
     t_vector e2 = vec_sub(scene->objects[scene->obj_count].triangle.v3, 
                            scene->objects[scene->obj_count].triangle.v1);
     scene->objects[scene->obj_count].triangle.normal = vec_normalize(vec_cross(e1, e2));
 
-    // Optional texture support
     if (parts[5])
     {
         scene->objects[scene->obj_count].texture = load_texture(parts[5]);
@@ -432,7 +387,6 @@ int parse_triangle(t_scene *scene, char **parts)
     return (1);
 }
 
-// New function to parse compact sphere format
 int parse_sphere_compact(t_scene *scene, char **parts)
 {
     char *texture_path = NULL;
@@ -452,7 +406,6 @@ int parse_sphere_compact(t_scene *scene, char **parts)
         scene->objects[scene->obj_count].sphere.diameter / 2.0;
     scene->objects[scene->obj_count].color = parse_color(parts[3]);
 
-    // Check for texture and bump map
     for (int i = 4; parts[i] != NULL; i++)
     {
         if (ft_strncmp(parts[i], "txm:", 4) == 0)
@@ -461,7 +414,6 @@ int parse_sphere_compact(t_scene *scene, char **parts)
             bump_path = parts[i] + 4;
     }
 
-    // Load texture if specified
     if (texture_path)
     {
         scene->objects[scene->obj_count].texture = load_texture(texture_path);
@@ -474,9 +426,7 @@ int parse_sphere_compact(t_scene *scene, char **parts)
     scene->obj_count++;
     return (1);
 }
-/**
- * Read and parse the scene description file
- */
+
 int	read_map(t_scene *scene, int fd)
 {
 	char	*line;
@@ -487,7 +437,6 @@ int	read_map(t_scene *scene, int fd)
 		if (!line)
 			break;
 		
-		// Remove newline character if present
 		int len = ft_strlen(line);
 		if (len > 0 && line[len - 1] == '\n')
 			line[len - 1] = '\0';
@@ -503,7 +452,6 @@ int	read_map(t_scene *scene, int fd)
 	}
 	close(fd);
 	
-	// Verify that we have at least one object, ambient and camera
 	if (scene->obj_count == 0)
 	{
 		ft_putstr_fd("Error: No objects in scene\n", 2);

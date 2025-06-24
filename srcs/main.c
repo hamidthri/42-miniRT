@@ -1,6 +1,5 @@
 # include "../includes/minirt.h"
 
-
 void	render(mlx_t *mlx, t_scene *scene)
 {
 	size_t		i;
@@ -30,9 +29,6 @@ void	render(mlx_t *mlx, t_scene *scene)
 	mlx_image_to_window(mlx, img, 0, 0);
 }
 
-/**
- * Free resources and exit
- */
 void cleanup_and_exit(t_scene *scene, mlx_t *mlx, int status)
 {
     size_t i;
@@ -42,7 +38,6 @@ void cleanup_and_exit(t_scene *scene, mlx_t *mlx, int status)
     
     if (scene->objects)
     {
-        // Free textures
         for (i = 0; i < scene->obj_count; i++)
         {
             if (scene->objects[i].texture)
@@ -72,7 +67,7 @@ void init_scene(t_scene *scene)
     scene->camera.pos = (t_vector){0, 0, 0};
     scene->camera.dir = (t_vector){0, 0, 1};
     scene->camera.fov = 70.0;
-    scene->checkerboard = 0;  // Disabled by default
+    scene->checkerboard = 0;
 }
 
 int	main(int argc, char **argv)
@@ -89,7 +84,6 @@ int	main(int argc, char **argv)
 	if (fd == -1)
 		return (ft_putstr_fd("Error: Could not open file\n", 2), 1);
 	
-	// Allocate memory for objects and lights
 	objs = malloc(sizeof(t_object) * MAX_OBJECTS);
 	lights = malloc(sizeof(t_light) * MAX_LIGHTS);
 	if (!objs || !lights)
