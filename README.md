@@ -1,4 +1,4 @@
-# miniRT
+# miniRT - My First Ray Tracer
 
 A 3D ray tracer implementation in C using miniLibX that generates photorealistic images from mathematical scene descriptions. This project demonstrates the fundamentals of ray tracing algorithms, 3D mathematics, and computer graphics programming.
 
@@ -125,6 +125,16 @@ cy 50,0,20.6 0,0,1 14.2 21.42 10,0,255
 
 ## Sample Outputs
 
+### Rendered Scenes
+
+![Atom Scene](https://github.com/hamidthri/42-miniRT/blob/master/assetes/atom.png)
+*Complex atomic structure with multiple spheres and lighting*
+
+
+
+![Wolf Scene](https://github.com/hamidthri/42-miniRT/blob/master/assetes/wolf.png)
+*Artistic wolf composition demonstrating advanced geometry*
+
 
 
 ## Technical Implementation
@@ -135,11 +145,3 @@ cy 50,0,20.6 0,0,1 14.2 21.42 10,0,255
 3. **Closest Hit**: Determine nearest intersection point
 4. **Lighting Calculation**: Apply Phong shading model
 5. **Color Computation**: Combine ambient, diffuse, and shadow effects
-
-### Mathematical Foundations
-- **Vector Operations**: Dot product, cross product, normalization
-- **Ray-Sphere Intersection**: Quadratic equation solving
-- **Ray-Plane Intersection**: Line-plane intersection formula
-- **Ray-Cylinder Intersection**: Complex geometric calculations
-- **Coordinate Transformations**: 3D rotation and translation matrices
-
