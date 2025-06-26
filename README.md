@@ -26,7 +26,7 @@ make
 
 ### Running the Ray Tracer
 ```bash
-./miniRT scene.rt
+./miniRT scenes/wolf.rt
 ```
 
 The program will open a window displaying the rendered scene. Use ESC or the window close button to exit.
