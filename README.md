@@ -12,47 +12,21 @@ This implementation focuses on the core concepts:
 - 3D transformations and coordinate systems
 - Scene parsing and memory management
 
-## Features
-
-### Geometric Objects
-- **Spheres**: Perfect spherical objects with configurable diameter
-- **Planes**: Infinite flat surfaces defined by a point and normal vector
-- **Cylinders**: Finite cylindrical objects with configurable diameter and height
-
-### Lighting System
-- **Ambient Lighting**: Global illumination ensuring objects are never completely dark
-- **Diffuse Lighting**: Directional lighting with realistic light falloff
-- **Hard Shadows**: Sharp shadow casting from light sources
-- **Multiple Light Sources**: Support for various positioned lights
-
-### Camera System
-- **Configurable Viewpoint**: Position camera anywhere in 3D space
-- **Orientation Control**: Point camera in any direction using normalized vectors
-- **Field of View**: Adjustable horizontal FOV (0-180 degrees)
-- **Perspective Projection**: Realistic depth perception
-
-### Scene Management
-- **Custom File Format**: Human-readable `.rt` scene description files
-- **Flexible Parsing**: Elements can appear in any order with flexible spacing
-- **Error Handling**: Comprehensive validation with descriptive error messages
-- **Object Transformations**: Translation and rotation support (except spheres)
-
 ## Installation & Usage
 
 ### Building the Project
 ```bash
+git clone https://github.com/hamidthri/42-miniRT
+cd 42-miniRT
 # Clone and build
+git clone https://github.com/codam-coding-college/MLX42
+make mlx
 make
-
-# Clean build files
-make clean      # Remove object files
-make fclean     # Remove object files and executable
-make re         # Rebuild everything
 ```
 
 ### Running the Ray Tracer
 ```bash
-./miniRT scenes/example.rt
+./miniRT scene.rt
 ```
 
 The program will open a window displaying the rendered scene. Use ESC or the window close button to exit.
@@ -116,12 +90,6 @@ sp 0,0,20 20 255,0,0
 # Blue cylinder
 cy 50,0,20.6 0,0,1 14.2 21.42 10,0,255
 ```
-
-## Controls & Interface
-
-- **ESC Key**: Exit program cleanly
-- **Window Close Button**: Exit program cleanly
-- **Window Management**: Supports minimization, focus switching, etc.
 
 ## Sample Outputs
 
