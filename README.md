@@ -1,5 +1,7 @@
 # miniRT
 
+![Dragon](assets/dragon.png)
+
 A 3D ray tracer implementation in C using miniLibX that generates photorealistic images from mathematical scene descriptions. This project demonstrates the fundamentals of ray tracing algorithms, 3D mathematics, and computer graphics programming.
 
 ## Overview
@@ -95,12 +97,12 @@ cy 50,0,20.6 0,0,1 14.2 21.42 10,0,255
 
 ### Rendered Scenes
 
-![Atom Scene](https://github.com/hamidthri/42-miniRT/blob/master/assetes/atom.png)
+![Atom Scene](assets/atom.png)
 *Complex atomic structure with multiple spheres and lighting*
 
 
 
-![Wolf Scene](https://github.com/hamidthri/42-miniRT/blob/master/assetes/wolf.png)
+![Wolf Scene](assets/wolf.png)
 *Artistic wolf composition demonstrating advanced geometry*
 
 
